@@ -7,6 +7,11 @@ export DEB_CFLAGS_MAINT_APPEND  = -Wall
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,-O1 -Wl,-z,defs
 export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
 
+ifneq (,$(filter nocheck,$(DEB_BUILD_PROFILES)))
+TESTS=-Dtests=disabled \
+      -Dspectre=disabled
+endif
+
 %:
 	dh $@
 
@@ -14,11 +19,12 @@ configure_flags += \
 	-Dauto_features=enabled \
 	-Dsymbol-lookup=disabled \
 	-Dtee=enabled \
-	-Dquartz=disabled
+	-Dquartz=disabled \
+	$(TESTS)
 
 deb_configure_flags += \
 	$(configure_flags) \
-	-Dgtk_doc=true
+	-Dgtk_doc=$(if $(filter %-doc,$(shell dh_listpackages)),true,false)
 
 udeb_configure_flags += \
 	$(configure_flags) \
