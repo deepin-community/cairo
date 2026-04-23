@@ -1,0 +1,25 @@
+Description: Fix CVE-2025-50422: NULL pointer dereference in rectangle tessellation
+ Add boundary checks to prevent INT32_MAX overflow that leads to NULL
+ pointer dereference (CWE-617) in _cairo_bentley_ottmann_tessellate_boxes.
+Author: Bryce Van Dyk <bvandyk@dequc.com>
+Origin: upstream, https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/621
+Bug: https://security-tracker.debian.org/tracker/CVE-2025-50422
+Forwarded: not-needed
+---
+ src/cairo-bentley-ottmann-rectangular.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/src/cairo-bentley-ottmann-rectangular.c
++++ b/src/cairo-bentley-ottmann-rectangular.c
+@@ -854,6 +854,11 @@ _cairo_bentley_ottmann_tessellate_boxes
+ 	    rectangles[j].top = box[i].p1.y;
+ 	    rectangles[j].bottom = box[i].p2.y;
+ 
++	    if (unlikely (rectangles[j].left.x == INT32_MAX))
++		rectangles[j].left.x = INT32_MAX-1;
++	    if (unlikely (rectangles[j].right.x == INT32_MAX))
++		rectangles[j].right.x = INT32_MAX-1;
++
+ 	    if (rectangles_chain) {
+ 		h = _cairo_fixed_integer_floor (box[i].p1.y) - y_min;
+ 		rectangles[j].left.next = (edge_t *)rectangles_chain[h];

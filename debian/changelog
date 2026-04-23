@@ -1,3 +1,13 @@
+cairo (1.18.4-3deepin1) unstable; urgency=medium
+
+  * Fix CVE-2025-50422: NULL pointer dereference in rectangle
+    tessellation  Add boundary checks to prevent INT32_MAX overflow that
+    leads to NULL pointer dereference (CWE-617) in
+    _cairo_bentley_ottmann_tessellate_boxes.  Upstream MR:
+    https://gitlab.freedesktop.org/cairo/cairo/-/merge_requests/621
+
+ -- deepin-ci-robot <packages@deepin.org>  Thu, 23 Apr 2026 21:28:51 +0800
+
 cairo (1.18.4-3) unstable; urgency=medium
 
   * Stop skipping build tests on loong64
